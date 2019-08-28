@@ -140,6 +140,7 @@ class Main(tk.Frame):
     def update_current(self):
         self.db.c.execute('''SELECT * FROM finance''')
         sum_list = []
+        valid = False
         while True:
             row = self.db.c.fetchone()
             if row == None:
