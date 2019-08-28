@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 import sqlite3 as sql
 
-VERSION = '2.2.0'
+VERSION = '2.3.0'
 
 class Main(tk.Frame):
     def __init__(self, root):
@@ -74,7 +74,7 @@ class Main(tk.Frame):
 
         self.tree = ttk.Treeview(
             self,
-            columns=('ID', 'description', 'costs', 'total'),
+            columns=('ID', 'description', 'way', 'total'),
             height=17,
             show='headings')
         self.tree.column(
@@ -86,7 +86,7 @@ class Main(tk.Frame):
             width=419,
             anchor=tk.CENTER)
         self.tree.column(
-            'costs',
+            'way',
             width=111,
             anchor=tk.CENTER)
         self.tree.column(
@@ -96,28 +96,28 @@ class Main(tk.Frame):
 
         self.tree.heading('ID', text='ID')
         self.tree.heading('description', text='Name')
-        self.tree.heading('costs', text='Incomes\\expenses')
+        self.tree.heading('way', text='Incomes\\expenses')
         self.tree.heading('total', text='Total')
 
         self.tree.pack()
 
 
-    def records(self, description, costs, total):
-        if total < 0:
-            total = total * -1
-        self.db.incert_data(description, costs, total)
+    def records(self, description, way, total):
+        if int(total) < 0:
+            total = int(total) * -1
+        self.db.incert_data(description, way, total)
         self.view_records()
 
-    def update_records(self, description, costs, total):
-        if total < 0:
-            total = total * -1
+    def update_records(self, description, way, total):
+        if int(total) < 0:
+            total = int(total) * -1
         self.db.c.execute(
             '''UPDATE finance SET 
             description=?,
-            costs=?,
+            way=?,
             total=? 
             WHERE ID=?''',
-            (description, costs, total, self.tree.set(
+            (description, way, total, self.tree.set(
                 self.tree.selection()[0],
                 '#1')))
         self.db.conn.commit()
@@ -175,23 +175,6 @@ class Child(tk.Toplevel):
         self.init_child()
         self.view = app
 
-    #def enter_records(self, event):
-    #    entry_mon = self.entry_money.get()
-    #    if self.combobox.get() == 'Income':
-    #        self.view.records(
-    #            self.entry_description.get(),
-    #            self.combobox.get(),
-    #            self.entry_money.get())
-    #    elif self.combobox.get() == 'Expence':
-    #        self.view.records(
-    #            self.entry_description.get(),
-    #            self.combobox.get(),
-    #            '-' + self.entry_money.get())
-    #    else:
-    #        self.view.records(
-    #            self.entry_description.get(),
-    #            'choose',
-    #            '')   
 
     def init_child(self):
         self.title('Add income and expenses')
@@ -262,14 +245,14 @@ class DB:
             '''CREATE TABLE IF NOT EXISTS finance (
             id integer primary key,
             description text,
-            costs text,
+            way text,
             total real)''')
         self.conn.commit()
 
-    def incert_data(self, description, costs, total):
+    def incert_data(self, description, way, total):
         self.c.execute(
-            '''INSERT INTO finance(description, costs, total) VALUES (?, ?, ?)''',
-            (description, costs, total))
+            '''INSERT INTO finance(description, way, total) VALUES (?, ?, ?)''',
+            (description, way, total))
         self.conn.commit()
 
 if __name__ == "__main__":
