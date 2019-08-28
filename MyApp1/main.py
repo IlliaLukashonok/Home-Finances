@@ -1,8 +1,8 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, messagebox
 import sqlite3 as sql
 
-VERSION = '2.1.0'
+VERSION = '2.2.0'
 
 class Main(tk.Frame):
     def __init__(self, root):
@@ -140,9 +140,23 @@ class Main(tk.Frame):
             row = self.db.c.fetchone()
             if row == None:
                 break
-            i = row[3]
-            sum_list.append(i)
-        self.current_n.config(text=sum(sum_list))
+            if row[2] == 'Income':
+                i = row[3]
+                sum_list.append(i)
+                valid = True
+            elif row[2] == 'Expence':
+                i =float('-' + str(row[3]))
+                sum_list.append(i)
+                valid = True
+            else:
+                self.current_n.config(text='Error')
+                messagebox.showerror(
+                    "Error",
+                    "Enter type into line number {}".format(row[0]))
+                valid = False
+                break
+        if valid == True:
+            self.current_n.config(text=sum(sum_list))
     
     def open_dialog(self):
         Child()
@@ -155,7 +169,25 @@ class Child(tk.Toplevel):
         super().__init__(root)
         self.init_child()
         self.view = app
-        
+
+    #def enter_records(self, event):
+    #    entry_mon = self.entry_money.get()
+    #    if self.combobox.get() == 'Income':
+    #        self.view.records(
+    #            self.entry_description.get(),
+    #            self.combobox.get(),
+    #            self.entry_money.get())
+    #    elif self.combobox.get() == 'Expence':
+    #        self.view.records(
+    #            self.entry_description.get(),
+    #            self.combobox.get(),
+    #            '-' + self.entry_money.get())
+    #    else:
+    #        self.view.records(
+    #            self.entry_description.get(),
+    #            'choose',
+    #            '')   
+
     def init_child(self):
         self.title('Add income and expenses')
         self.geometry('400x220+400+300')
@@ -241,7 +273,7 @@ if __name__ == "__main__":
     app = Main(root)
     app.pack()
     root.title("Household finance")
-    root.geometry("640x480+200+300")
+    root.geometry("640x480+640+300")
     root.resizable(False, False)
 
     root.mainloop()
