@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 import sqlite3 as sql
 
-VERSION = 2.0
+VERSION = '2.1.0'
 
 class Main(tk.Frame):
     def __init__(self, root):
@@ -51,12 +51,6 @@ class Main(tk.Frame):
             compound=tk.TOP,
             command=self.delete_records)
         btn_delete.pack(side=tk.LEFT)
-
-        # Duck with it!!!
-        #current_acc_lab = tk.Label(
-        #    toolbar,
-        #    text=current_acc)
-        #current_acc.pack(anchor=tk.NE)
         
         self.update_curr_img = tk.PhotoImage(file='data\\upd.png')
         btn_update = tk.Button(
