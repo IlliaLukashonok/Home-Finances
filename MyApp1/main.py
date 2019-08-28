@@ -103,10 +103,14 @@ class Main(tk.Frame):
 
 
     def records(self, description, costs, total):
+        if total < 0:
+            total = total * -1
         self.db.incert_data(description, costs, total)
         self.view_records()
 
     def update_records(self, description, costs, total):
+        if total < 0:
+            total = total * -1
         self.db.c.execute(
             '''UPDATE finance SET 
             description=?,
@@ -145,7 +149,7 @@ class Main(tk.Frame):
                 sum_list.append(i)
                 valid = True
             elif row[2] == 'Expence':
-                i =float('-' + str(row[3]))
+                i = float('-' + str(row[3]))
                 sum_list.append(i)
                 valid = True
             else:
